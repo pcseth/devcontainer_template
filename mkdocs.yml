@@ -1,0 +1,7 @@
+site_name: My Project
+theme:
+  name: material
+  palette:
+    scheme: default
+nav:
+  - Home: index.md
