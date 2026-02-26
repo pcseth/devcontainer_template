@@ -1,0 +1,39 @@
+{
+  "name": "Research DevContainer",
+  "build": {
+    "dockerfile": "../containers/Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind",
+    "source=/run/host-services/ssh-auth.sock,target=/run/host-services/ssh-auth.sock,type=bind",
+    "source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind"
+  ],
+  "containerEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+    "SSH_AUTH_SOCK": "/run/host-services/ssh-auth.sock",
+    "HOST_HOME": "${localEnv:HOME}"
+  },
+  "postCreateCommand": "pip install -e '.[dev]'",
+  "postStartCommand": "if [ -n \"$HOST_HOME\" ] && [ \"$HOST_HOME\" != \"$HOME\" ]; then sudo mkdir -p \"$(dirname $HOST_HOME)\" && sudo ln -sfn \"$HOME/.claude\" \"$HOST_HOME/.claude\"; fi && python3 --version && make --version > /dev/null",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "anthropic.claude-code",
+        "openai.chatgpt"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
