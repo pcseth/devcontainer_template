@@ -25,19 +25,24 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Install Node.js 20 (for Claude Code CLI)
+# Install Node.js 20 (for OpenAI Codex CLI)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Claude Code CLI and OpenAI Codex CLI
-RUN npm install -g @anthropic-ai/claude-code @openai/codex
+# Install OpenAI Codex CLI
+RUN npm install -g @openai/codex
 
 # Install Python dev tooling (domain packages go in pyproject.toml)
 RUN pip install --no-cache-dir \
-    jupyter ipykernel \
+    jupyter ipykernel jupyterlab \
     mkdocs mkdocs-material pymdown-extensions \
     pytest ruff mypy
 
 USER vscode
+
+# Install Claude Code CLI (native installer, auto-updates)
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/home/vscode/.local/bin:${PATH}"
+
 WORKDIR /workspace
 CMD ["bash"]
