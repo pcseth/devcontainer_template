@@ -2,6 +2,27 @@
 
 TODO: Describe your project.
 
+## Security Model
+
+This template uses a devcontainer to create a separation between AI coding assistants (Claude, Codex) and sensitive data:
+
+```
++---------------------------+       +---------------------------+
+|  Container (AI sandbox)   |       |   Host / Cluster          |
+|                           |       |                           |
+|  Claude / Codex           |       |   Sensitive data (PHI)    |
+|  Code editor (VS Code)    |       |   Cluster storage         |
+|  /workspace (code only)  <------->|   /fh/fast/.../project/   |
+|                           | bind  |                           |
++---------------------------+ mount +---------------------------+
+```
+
+- **AI assistants** see only the code in `/workspace` — no access to data paths
+- **Code syncs automatically** — the workspace is bind-mounted from the host (or cluster mount), so files written in the container appear at their original path on the cluster
+- **Data stays outside** — code references cluster data paths, but the user runs data-touching code outside the container after reviewing it
+
+This means you can use AI assistants freely for writing analysis code, visualization specs, and tests without exposing sensitive data.
+
 ## Setup
 
 1. **Use this template**: Click "Use this template" on GitHub to create your own repo
@@ -30,24 +51,16 @@ make docs       # Serve docs locally
 3. If a package needs system libraries, add them to `containers/Dockerfile`
 4. Run `pip install -e '.[dev]'` to install
 
-## Adding Data Mounts
-
-To mount additional directories (e.g., shared data) into the container, add entries to the `mounts` array in `.devcontainer/devcontainer.json`:
-
-```json
-"source=/path/to/data,target=/data,type=bind"
-```
-
 ## Project Structure
 
 ```
-├── .devcontainer/          # Container configuration
-├── containers/Dockerfile   # Container image definition
-├── src/my_project/         # Your package code (rename this!)
-├── tests/                  # Test files
-├── docs/                   # Documentation (mkdocs)
-├── Makefile                # Build/test commands
-├── pyproject.toml          # Package config + tool settings
-├── CLAUDE.md               # AI assistant instructions + best practices
-└── README.md               # This file
+.devcontainer/              # Container configuration
+containers/Dockerfile       # Container image definition
+src/my_project/             # Your package code (rename this!)
+tests/                      # Test files
+docs/                       # Documentation (mkdocs)
+Makefile                    # Build/test commands
+pyproject.toml              # Package config + tool settings
+CLAUDE.md                   # AI assistant instructions + security boundary
+README.md                   # This file
 ```
