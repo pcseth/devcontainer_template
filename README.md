@@ -33,6 +33,10 @@ This means you can use AI assistants freely for writing analysis code, visualiza
 6. **Verify**: Run `make all` to confirm everything works
 7. **Start coding**: Write tests first, then implement!
 
+## Jupyter on HPC
+
+To run notebooks with a kernel on the Fred Hutch cluster, see [Connecting to a Jupyter Server on HPC](docs/jupyter-hpc.md).
+
 ## Development
 
 ```bash

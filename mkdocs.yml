@@ -5,3 +5,4 @@ theme:
     scheme: default
 nav:
   - Home: index.md
+  - Jupyter on HPC: jupyter-hpc.md
