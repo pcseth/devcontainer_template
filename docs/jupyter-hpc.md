@@ -72,6 +72,14 @@ After connecting, VS Code will show available kernels from the remote server. Pi
 | `ECONNREFUSED host.docker.internal` | SSH tunnel not running | Check your Mac terminal — restart the `ssh -N -L` command |
 | Tunnel terminal unfroze | SSH session timed out or disconnected | Re-run the `ssh -N -L` command |
 
+## Paths in notebook code
+
+Because the Jupyter kernel runs on the HPC node, notebook code has full access to cluster paths (`/fh/fast/...`, `/shared/ngs/...`, etc.). Always use cluster paths in your notebooks — not `/workspace/` or `/Volumes/...`.
+
+If your workspace is on a cluster SMB mount, the project code is also accessible from the HPC kernel at its cluster path. For example, a module at `/workspace/src/my_project/utils.py` inside the container is the same file as `/fh/fast/ghajar_c/.../my_project/src/my_project/utils.py` on the cluster. You can import it from the kernel if the cluster path is on `sys.path`.
+
+See the **Path Equivalence** section in `CLAUDE.md` for the full mapping.
+
 ## How it works
 
 ```
